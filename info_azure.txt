@@ -1,0 +1,33 @@
+IAM : 
+
+A Service Principal is the identity that an application or service uses to access Azure resources.
+    Created when you register an app in Azure AD.
+    CI/CD pipelines (e.g., GitHub Actions, Terraform)
+
+✅ Example Use Cases
+Use Case	Azure	AWS
+App in Azure Function calls Key Vault	Managed Identity	Lambda with attached IAM role
+Terraform authenticates to Azure	Service Principal	IAM User or IAM Role + access keys
+GitHub Actions deploys infra	Service Principal + AAD Federation	IAM Role with GitHub OIDC provider
+AKS Pod accesses Azure Storage securely	Workload Identity + MSI	EKS Pod + IAM Role for Service Account (IRSA)
+
+🔁 Azure vs AWS IAM Concept Mapping
+Azure Concept	AWS Equivalent	Description
+Service Principal (SP)	🔸 IAM Role with OIDC trust policy
+🔸 IAM User + access keys	Represents an application identity. Can authenticate via client ID + secret or certificate.
+Similar to a trusted OIDC identity for workloads or an IAM user.
+Managed Identity (MSI)	✅ IAM Role with EC2/Lambda/EKS assumed identity	A managed identity attached to Azure resources, like VMs or functions. AWS equivalent is a role assigned to a resource (like EC2 instance profile).
+Azure AD App Registration	OIDC Provider + Role + Policy Binding	Azure's way to register applications for identity and access. Comparable to setting up an OIDC trust provider in AWS.
+System-assigned MSI	IAM Role for EC2/Lambda (with instance profile)	Automatically created and managed identity bound to a single resource.
+User-assigned MSI	IAM Role assumed by multiple services via sts:AssumeRole	Reusable identity across multiple Azure resources. Equivalent to reusing a role with trust policies in AWS.
+
+=========================
+🚀 Storage Account  
+
+✅ LRS - Locally redunant Storage; Geo-redunant Stroage - failover to other region;
+    Zone-redunant storage - failover to other zone ; Geo-zone redunant storage
+
+=============
+
+az login --service-principal -u 8b3920d5-e2c8-4cb7-898a-ed357cea291b -p ISK8Q~oH8huX3yHS4l1jPG~AFmi1i22kHLeLgcfP --tenant 84f1e4ea-8554-43e1-8709-f0b8589ea118
+az account set --subscription 28e1e42a-4438-4c30-9a5f-7d7b488fd883

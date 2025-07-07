@@ -1,0 +1,123 @@
+https://learn.microsoft.com/en-us/azure/architecture/networking/
+
+===========================
+
+🚀 VNET Setup 
+
+✅ (VNet) is a regional resource — not global or zonal
+✅  VNET Peering needed for cross-region
+✅ Creating a new virtual network
+Creating a new subnet
+Creating a new virtual network peering
+Associating DNS servers with a virtual network
+Associating a DDOS protection plan with a virtual network
+Associating a network security group with a subnet
+Associating a route table with a subnet
+Associating a service endpoint with a subnet
+Associating a virtual network gateway with a subnet
+Assigning delegations to subnets
+Network Watcher
+
+===========================
+
+🚀 VNET - Route Table  
+
+✅ Azure automatically handles routing in many common scenarios:
+    - Outbound internet for private subnet via NAT Gateway
+    - Internal Load Balancer (ILB) in same VNet
+    - Spoke-to-hub traffic via peering
+    - Basic intra-subnet or intra-VNet communication
+✅ Route Table IS Needed
+    - Force all egress traffic to a Azure firewall or NVA
+    - Enable transitive routing across peered VNets
+
+===========================
+
+🚀 VNET - Subnet  
+
+✅ Azure subnets span all AZs within a region
+✅ Subnets are region-scoped, not zone-scoped.
+✅ deploy VMs in multiple zones within the same subnet
+✅ ILB Standard SKU can be zonal or zone-redundant and uses a single subnet.
+✅ NAT Gateway can be zonal or zone-redundant, associated with one subnet
+✅ Application Gateway with zones, AKS with nodepools in multiple zones uses same subnet
+✅ Multi subnet - when you want zone-specific routing, security, or policies.
+✅ create subnet for FW, bastion,
+✅ subnets can have service endpoints associated like Eventhub, storage, kv, sql
+✅ Service delegations: Microsoft.ContainerInstance/containerGroups ; "Microsoft.Network/natGateways"
+✅ Gateway Subnet (required name: GatewaySubnet) ; Bastion Subnet (required name: AzureBastionSubnet)
+
+
+===========================
+
+🚀 VNET - private DNS  
+
+✅ Link your Virtual Network to the zone (called a VNet Link)
+✅ Registration :	registration_enabled
+        - true: Only one VNet link can use
+        - true : VM will auto-register A record; vm1.internal.demo.local → 10.0.2.4
+        - true: only for Azure VMs — not for Azure Container Instances or other resources
+        - Hub-spoke architecture	Register in spoke VNet, and resolve from hub VNet
+        - false: recommended for shared zones
+        - false: manually create DNS records (A/CNAME/etc.)
+✅
+✅
+✅
+✅
+
+===========================
+
+🚀 VNET - Azure Load Balancer  
+
+✅ Azure Load Balancer is Layer 4 NLB
+✅ Internal and external LB 
+    - External Load Balancer with a Public IP → does not require a subnet
+    - Internal Load Balancer with a Private IP → must be placed in a subnet
+✅ External LB :
+    - need public IP
+    - Frontend IP config - Public IP created
+    - Backend address pool - the VM or VMSS
+    - Health probes - Check status of the backend and used by Lb rule
+    - Lb rule 
+        - Listener
+        - define how incoming traffic is distributed to the all the instances within the backend pool
+        - maps a given frontend IP configuration and port to multiple backend IP addresses and ports
+✅ Internal LB:
+    - Private subnet 
+    - Frontend IP config - private IP allocated ( Dynamic or static)
+    - Backend address pool - the VM or VMSS
+✅ Backend pools can be NIC, VMSS, LB, IP, APGW IP, Private link service IP 
+✅ Backend to single VM
+    - create a NIC in private subnet
+    - Add the NIC to the backend pool required
+    - create VM with the NIC created
+✅ Backend to VMSS 
+    - VM scale set - like launch template (image, vm auth, disk, NIC)
+    - NIC mentioned in VMSS will point to the backend pool
+    - Autoscaling setting rules 
+✅  NSG to be opened properly for public and private subnet 
+    - Private NSG should allow ports from public 
+✅
+✅
+✅
+===========================
+
+🚀 VNET - Application Security group  
+
+✅ ASG is a logical group of NIC
+✅ Create dynamic security rules (e.g., "allow web tier to talk to app tier")
+✅ Apply NSG rules based on group membership, not hardcoded IPs or subnets
+✅ ASGs in Azure are used in NSG rules, not applied directly to VMs like in AWS
+✅ Attach ASGs to NICs via application_security_group_ids
+✅
+
+
+
+===
+
+
+✅
+✅
+✅
+✅
+✅
